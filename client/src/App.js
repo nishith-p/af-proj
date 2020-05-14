@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "./Components/Navbar";
+import Navtest from "./Components/Navtest";
 import Home from "./Components/Home";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
@@ -12,7 +13,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
   return (
     <Router>
-      <Navbar />
+      <Navtest />
       <Route exact path="/" component={Home} />
       <UnPrivateRoute path="/login" component={Login} />
       <UnPrivateRoute path="/register" component={Register} />
