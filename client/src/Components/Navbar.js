@@ -39,8 +39,8 @@ const Navbar = (props) => {
         <Link to="/">
           <li className="nav-item nav-link">Home</li>
         </Link>
-        <Link to="/todos">
-          <li className="nav-item nav-link">Todos</li>
+        <Link to="/orders">
+          <li className="nav-item nav-link">Orders</li>
         </Link>
         {user.role === "admin" ? (
           <Link to="/admin">
