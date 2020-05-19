@@ -22,6 +22,12 @@ mongoose.connect(
 const userRouter = require("./routes/User");
 app.use("/user", userRouter);
 
+const categoryRouter = require("./routes/Category");
+app.use("/category", categoryRouter);
+
+const productRouter = require("./routes/Product");
+app.use("/product", productRouter);
+
 app.listen(PORT, () => {
   console.log("Express server started.");
 });

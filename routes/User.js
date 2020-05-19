@@ -138,11 +138,77 @@ userRouter.get(
   "/authenticated",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    const { username, role } = req.user;
+    const { _id, username, role, name } = req.user;
     res.status(200).json({
       isAuthenticated: true,
-      user: { username, role },
+      user: { _id, username, role, name },
     });
+  }
+);
+
+userRouter.get(
+  "/getManagers",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    User.find({ role: "manager" })
+      .then((users) => res.json(users))
+      .catch((err) => res.status(400).json("Error: " + err));
+  }
+);
+
+userRouter.get(
+  "/getUsers",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    User.find({ role: "user" })
+      .then((users) => res.json(users))
+      .catch((err) => res.status(400).json("Error: " + err));
+  }
+);
+
+userRouter.delete(
+  "/delete/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    User.findByIdAndDelete(req.params.id, (err, data) => {
+      if (err)
+        res.status(500).json({
+          message: { msgBody: "Error occured", msgError: true },
+        });
+      else {
+        res.status(200).json({
+          message: {
+            message: { msgBody: "Successfully deleted.", msgError: false },
+          },
+        });
+      }
+    });
+  }
+);
+
+userRouter.post(
+  "/update/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    User.findById(req.params.id)
+      .then((User) => {
+        User.name = req.body.name;
+        User.username = req.body.username;
+        User.save((err) => {
+          if (err)
+            res.status(500).json({
+              message: { msgBody: "Error occured", msgError: true },
+            });
+          else {
+            res.status(200).json({
+              message: {
+                message: { msgBody: "Successfully updated. ", msgError: false },
+              },
+            });
+          }
+        });
+      })
+      .catch((err) => res.status(400).json("Error: " + err));
   }
 );
 

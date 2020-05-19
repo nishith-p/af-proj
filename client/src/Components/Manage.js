@@ -1,11 +1,10 @@
 import React from "react";
 import Sidebar from "./Sidebar";
-import RegisterMan from "./RegisterMan";
-import User from "./User";
+import ManagerProduct from "./ManagerProduct";
 import Categories from "./Categories";
 import PrivateRoute from "../hocs/PrivateRoute";
 
-const Admin = () => (
+const Manage = () => (
   <div className="container">
     <div className="row">
       <div className="col-sm-2">
@@ -13,14 +12,13 @@ const Admin = () => (
       </div>
       <div className="col-sm-10">
         <PrivateRoute
-          path="/admin/managers"
-          roles={["admin"]}
-          component={RegisterMan}
+          path="/manage/products"
+          roles={["manager"]}
+          component={ManagerProduct}
         />
-        <PrivateRoute path="/admin/users" roles={["admin"]} component={User} />
         <PrivateRoute
-          path="/admin/categories"
-          roles={["admin"]}
+          path="/manage/reviews"
+          roles={["manager"]}
           component={Categories}
         />
       </div>
@@ -28,4 +26,4 @@ const Admin = () => (
   </div>
 );
 
-export default Admin;
+export default Manage;

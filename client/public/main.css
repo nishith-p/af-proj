@@ -1,38 +1,34 @@
-/*------------------------------------------------------------------
-Project:  
-Version:  
-Last change:  
-Assigned to:  Le Xuan Bach
-Primary use:  Company
--------------------------------------------------------------------*/
-/*------------------------------------------------------------------
-[LAYOUT]
+ul.ul-sidebar {
+  list-style-type: none;
+  margin: 0;
+  padding-top: 30px;
+  width: 200px;
+}
 
-* body
-  + Header / header
-  + Page Content / .page-content .name-page
-        + Section Layouts / section .name-section
-        ...
-  + Footer / footer
+ul.ul-sidebar .link-txt {
+  display: block;
+  color: #000;
+  padding: 1px;
+  text-decoration: none;
+}
+ul.ul-sidebar .link-txt li {
+  display: block;
+  color: #000;
+  padding: 16px 16px;
+  text-decoration: none;
+  padding: 5px;
+  padding-left: 10px;
+}
 
--------------------------------------------------------------------*/
-/*------------------------------------------------------------------
-[COLOR CODES]
+ul.ul-sidebar .link-txt.active {
+  background-color: #d1d1ee;
+  color: black;
+}
 
-# Text Color      :  
-# Primary Color 01:  
-# Primary Color 02:   
-# Primary Color 03:  
-
-------------------------------------------------------------------*/
-/*------------------------------------------------------------------
-[TYPOGRAPHY]
-
-Body            : 16px/1.6 '', Arial, sans-serif;
-Title           : 18px/1.6 '', Arial, sans-serif;
-Paragrap        : 18px/1.6 '', Arial, sans-serif;
-Input, textarea : 14px/1.6 '', Arial, sans-serif;
--------------------------------------------------------------------*/
+ul.ul-sidebar .link-txt:hover {
+  background-color: #f1f1f1;
+  color: black;
+}
 
 /*//////////////////////////////////////////////////////////////////
 [ FONT ]*/
@@ -360,12 +356,14 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   position: relative;
   padding: 20px 10px 20px 0px;
   margin: 0px 4px 0px 14px;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .link-txt {
   color: #333;
   transition: all 0.4s;
+  font-size: 15px;
+  font-weight: 500;
 }
 
 .link-txt:hover {
