@@ -21,7 +21,7 @@ const Login = (props) => {
       if (isAuthenticated) {
         authContext.setUser(user);
         authContext.setIsAuthenticated(isAuthenticated);
-        props.history.push("/orders");
+        props.history.push("/");
       } else {
         setMessage(message);
       }
@@ -29,34 +29,44 @@ const Login = (props) => {
   };
 
   return (
-    <div className="container">
-      <form onSubmit={onSubmit}>
-        <h3> Login</h3>
-        <label htmlFor="username" className="sr-only">
-          Username:{" "}
-        </label>
-        <input
-          type="text"
-          name="username"
-          onChange={onChange}
-          className="form-control"
-          placeholder="Enter Username"
-        />
-        <label htmlFor="password" className="sr-only">
-          Password:{" "}
-        </label>
-        <input
-          type="password"
-          name="password"
-          onChange={onChange}
-          className="form-control"
-          placeholder="Enter Password"
-        />
-        <button className="btn btn-lg btn-primary btn-block" type="submit">
-          Log In
-        </button>
-      </form>
-      {message ? <Message message={message} /> : null}
+    <div className="container" style={{ paddingTop: "120px" }}>
+      <div style={{ marginBottom: "10px" }}>
+        <h1 className="text-center display-4">Login</h1>
+      </div>
+      <div className="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+        <form onSubmit={onSubmit}>
+          <label htmlFor="username" className="sr-only">
+            Username:{" "}
+          </label>
+          <input
+            type="text"
+            name="username"
+            onChange={onChange}
+            className="form-control"
+            style={{ marginBottom: "15px" }}
+            placeholder="Enter Username"
+          />
+          <label htmlFor="password" className="sr-only">
+            Password:{" "}
+          </label>
+          <input
+            type="password"
+            name="password"
+            onChange={onChange}
+            className="form-control"
+            style={{ marginBottom: "15px" }}
+            placeholder="Enter Password"
+          />
+          <button
+            className="btn btn-md btn-block"
+            style={{ backgroundColor: "#d1d1ee", marginBottom: "15px" }}
+            type="submit"
+          >
+            Login
+          </button>
+        </form>
+        {message ? <Message message={message} /> : null}
+      </div>
     </div>
   );
 };

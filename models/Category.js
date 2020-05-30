@@ -6,7 +6,6 @@ const CategorySchema = new mongoose.Schema({
     required: true,
   },
   products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-  subcats: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subcat" }],
 });
 
 module.exports = mongoose.model("Category", CategorySchema);

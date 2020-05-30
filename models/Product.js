@@ -12,17 +12,20 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
-    /*desc: {
+    desc: {
       type: String,
       required: true,
     },
     image: {
-      type: String,
-      required: false,
+      type: Array,
+      default: [],
     },
     price: {
       type: Number,
       required: true,
+    },
+    dprice: {
+      type: Number,
     },
     quantity: {
       type: Number,
@@ -30,8 +33,9 @@ const productSchema = new Schema(
     },
     discount: {
       type: Number,
+      default: 0,
     },
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],*/
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
   },
   { timestamps: true }
 );

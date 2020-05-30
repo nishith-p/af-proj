@@ -1,9 +1,7 @@
 import React from "react";
 import Sidebar from "./Sidebar";
-import RegisterMan from "./RegisterMan";
-import User from "./User";
-import Categories from "./Categories";
 import Profile from "./Profile";
+import Orders from "./Orders";
 import PrivateRoute from "../hocs/PrivateRoute";
 
 const UserProfile = () => (
@@ -18,6 +16,7 @@ const UserProfile = () => (
           roles={["user"]}
           component={Profile}
         />
+        <PrivateRoute path="/user/orders" roles={["user"]} component={Orders} />
       </div>
     </div>
   </div>

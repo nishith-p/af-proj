@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import Axios from "axios";
 import CategoryService from "../Services/CategoryService";
 import Message from "./Message";
 import { AuthContext } from "../Context/AuthContext";
@@ -23,9 +24,12 @@ const Categories = (props) => {
   //Mount Error Fix
   useEffect(() => {
     let unmounted = false;
-    CategoryService.getCategory().then((data) => {
-      if (!unmounted) {
-        setCategories(data);
+    Axios.get("/category/views").then((response) => {
+      if (response.data.success) {
+        setCategories(response.data.categories);
+        console.log(response.data.categories);
+      } else {
+        alert("Failed");
       }
     });
 
@@ -34,24 +38,24 @@ const Categories = (props) => {
     };
   });
 
+  const getCat = () => {
+    Axios.get("/category/views").then((response) => {
+      if (response.data.success) {
+        setCategories(response.data.categories);
+        console.log(response.data.categories);
+      } else {
+        alert("Failed");
+      }
+    });
+  };
+
   //Add Category
   const onSubmit = (e) => {
     e.preventDefault();
     CategoryService.postCategory(category).then((data) => {
       const { message } = data;
       resetForm();
-      if (!message.msgError) {
-        CategoryService.getCategory().then((data) => {
-          //setCategories(getData.categories);
-          setMessage(message);
-        });
-      } else if (message.msgBody == "Unauthorized") {
-        setMessage(message);
-        authContext.setUser({ username: "", role: "" });
-        authContext.setIsAuthenticated(false);
-      } else {
-        setMessage(message);
-      }
+      getCat();
     });
   };
 
@@ -64,18 +68,7 @@ const Categories = (props) => {
     CategoryService.editCategory(categoryN, categoryM.id).then((data) => {
       const { message } = data;
       resetForm2();
-      if (!message.msgError) {
-        CategoryService.getCategory().then((data) => {
-          //setCategories(getData.categories);
-          setMessage(message);
-        });
-      } else if (message.msgBody == "Unauthorized") {
-        setMessage(message);
-        authContext.setUser({ username: "", role: "" });
-        authContext.setIsAuthenticated(false);
-      } else {
-        setMessage(message);
-      }
+      getCat();
     });
   };
 
@@ -93,18 +86,7 @@ const Categories = (props) => {
     CategoryService.deleteCategory(id).then((data) => {
       const { message } = data;
       resetForm();
-      if (!message.msgError) {
-        CategoryService.getCategory().then((data) => {
-          //setCategories(getData.categories);
-          setMessage(message);
-        });
-      } else if (message.msgBody == "Unauthorized") {
-        setMessage(message);
-        authContext.setUser({ username: "", role: "" });
-        authContext.setIsAuthenticated(false);
-      } else {
-        setMessage(message);
-      }
+      getCat();
     });
   };
 

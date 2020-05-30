@@ -7,15 +7,19 @@ const User = require("../models/User");
 const Category = require("../models/Category");
 const Subcat = require("../models/Subcat");
 
-categoryRouter.get(
-  "/view",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    Category.find()
-      .then((categories) => res.json(categories))
-      .catch((err) => res.status(400).json("Error: " + err));
-  }
-);
+categoryRouter.get("/view", (req, res) => {
+  Category.find()
+    .then((categories) => res.json(categories))
+    .catch((err) => res.status(400).json("Error: " + err));
+});
+
+//AXIOS
+categoryRouter.get("/views", (req, res) => {
+  Category.find().exec((err, categories) => {
+    if (err) return res.status(400).json({ success: false, err });
+    res.status(200).json({ success: true, categories });
+  });
+});
 
 categoryRouter.post(
   "/add",

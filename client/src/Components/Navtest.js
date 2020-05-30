@@ -44,12 +44,12 @@ const Navbar = (props) => {
           </Link>
         ) : null}
         {user.role === "user" ? (
-          <Link className="link-txt" to="/admin/users">
+          <Link className="link-txt" to="/wishlist">
             <i class="fas fa-heart mm-li"></i>
           </Link>
         ) : null}
         {user.role === "user" ? (
-          <Link className="link-txt" to="/admin/users">
+          <Link className="link-txt" to="/cart">
             <i class="fas fa-shopping-cart mm-li"></i>
           </Link>
         ) : null}
@@ -73,13 +73,17 @@ const Navbar = (props) => {
       <div className="wrap-menu-desktop">
         <nav className="limiter-menu-desktop container">
           <Link to="/">
-            <div className="logo">Example</div>
+            <div className="logo" style={{ marginRight: "20px" }}>
+              <p
+                className="align-middle"
+                style={{ marginBottom: 0, fontSize: "40px" }}
+              >
+                Grid
+              </p>
+            </div>
           </Link>
           <div className="menu-desktop">
             <ul className="main-menu">
-              <Link className="link-txt" to="/">
-                <li className="mm-li">Home</li>
-              </Link>
               <Link className="link-txt" to="/">
                 <li className="mm-li">Shop</li>
               </Link>
@@ -88,9 +92,6 @@ const Navbar = (props) => {
               </Link>
               <Link className="link-txt" to="/">
                 <li className="mm-li">Contact</li>
-              </Link>
-              <Link className="link-txt" to="/admin/accounts">
-                <li className="mm-li">Orders</li>
               </Link>
             </ul>
           </div>
