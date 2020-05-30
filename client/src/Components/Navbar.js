@@ -59,7 +59,7 @@ const Navbar = (props) => {
   };
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container">
+      <div className="container" style={{ paddingTop: "30px" }}>
         <Link to="/">
           <div className="navbar-brand">Example</div>
         </Link>
