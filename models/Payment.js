@@ -20,6 +20,15 @@ const paymentSchema = new Schema(
       type: Array,
       default: [],
     },
+    total: {
+      type: Number,
+    },
+    status: {
+      type: String,
+      default: "processing",
+      enum: ["processing", "shipped", "cancelled", "completed"],
+      required: true,
+    },
     method: {
       type: String,
     },

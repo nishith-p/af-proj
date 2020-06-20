@@ -1,13 +1,32 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthService from "../Services/AuthService";
 import { AuthContext } from "../Context/AuthContext";
+import Axios from "axios";
 
 const Navbar = (props) => {
   const { isAuthenticated, user, setIsAuthenticated, setUser } = useContext(
     AuthContext
   );
 
+  const [noOfCartItem, setNoOfCartItem] = useState(0);
+  const [noOfWishListItem, setNoOfWishListItem] = useState(0);
+
+  useEffect(() => {
+    Axios.get("user/getCart").then((response) => {
+      if (response.data.length > 0) {
+        setNoOfCartItem(response.data.length);
+      }
+    });
+
+    Axios.get("user/getwish").then((response) => {
+      if (response.data.length > 0) {
+        setNoOfWishListItem(response.data.length);
+      }
+    });
+  }, []);
+
+  //LOGOUT HANDLER
   const onClickLogoutHandler = () => {
     AuthService.logout().then((data) => {
       if (data.success) {
@@ -17,6 +36,7 @@ const Navbar = (props) => {
     });
   };
 
+  //DISPLAY - UNREGISTERED
   const unauthenticatedNavBar = () => {
     return (
       <>
@@ -30,6 +50,7 @@ const Navbar = (props) => {
     );
   };
 
+  //DISPLAY - REGISTERED
   const authenticatedNavBar = () => {
     return (
       <>
@@ -45,12 +66,32 @@ const Navbar = (props) => {
         ) : null}
         {user.role === "user" ? (
           <Link className="link-txt" to="/wishlist">
-            <i class="fas fa-heart mm-li"></i>
+            <i className="fas fa-heart mm-li">
+              <span
+                style={{
+                  borderRadius: "100%",
+                  backgroundColor: "lightblue",
+                  padding: "18%",
+                }}
+              >
+                {noOfWishListItem}
+              </span>
+            </i>
           </Link>
         ) : null}
         {user.role === "user" ? (
           <Link className="link-txt" to="/cart">
-            <i class="fas fa-shopping-cart mm-li"></i>
+            <i class="fas fa-shopping-cart mm-li">
+              <span
+                style={{
+                  borderRadius: "80%",
+                  backgroundColor: "lightblue",
+                  padding: "18%",
+                }}
+              >
+                {noOfCartItem}
+              </span>
+            </i>
           </Link>
         ) : null}
         {user.role === "user" ? (
@@ -68,6 +109,8 @@ const Navbar = (props) => {
       </>
     );
   };
+
+  //COMMON NAVIGATION BAR
   return (
     <div className="container-menu-desktop fix-menu-desktop">
       <div className="wrap-menu-desktop">

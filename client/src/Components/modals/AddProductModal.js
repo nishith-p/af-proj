@@ -3,6 +3,7 @@ import CategoryService from "../../Services/CategoryService";
 import ProductService from "../../Services/ProductService";
 import Message from "../Message";
 import FileUpload from "../utils/FileUpload";
+import ManagerProduct from "../ManagerProduct";
 import { AuthContext } from "../../Context/AuthContext";
 import { Modal, Button } from "react-bootstrap";
 import Axios from "axios";
@@ -73,6 +74,8 @@ function AddProductModal(props) {
         console.log(error.response);
       });
     resetForm();
+
+    ManagerProduct(window.location.reload(false));
   };
 
   const resetForm = () => {

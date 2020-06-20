@@ -1,6 +1,7 @@
 import React from "react";
 import Sidebar from "./Sidebar";
 import ManagerProduct from "./ManagerProduct";
+import ManagerOrder from "./ManagerOrder";
 import Categories from "./Categories";
 import PrivateRoute from "../hocs/PrivateRoute";
 
@@ -15,6 +16,11 @@ const Manage = () => (
           path="/manage/products"
           roles={["manager"]}
           component={ManagerProduct}
+        />
+        <PrivateRoute
+          path="/manage/orders"
+          roles={["manager"]}
+          component={ManagerOrder}
         />
         <PrivateRoute
           path="/manage/reviews"

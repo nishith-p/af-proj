@@ -3,14 +3,17 @@ var cors = require("cors");
 const app = express();
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
-const { DB, PORT } = require("./config");
+const { DB } = require("./config");
+const path = require("path");
+
+const PORT = process.env.PORT || 8080;
 
 app.use(cookieParser());
 app.use(cors());
 app.use(express.json());
 
 mongoose.connect(
-  DB,
+  process.env.MONGODB_URI || DB,
   {
     useFindAndModify: true,
     useUnifiedTopology: true,
@@ -33,7 +36,21 @@ app.use("/product", productRouter);
 const reviewRouter = require("./routes/Comment");
 app.use("/comment", reviewRouter);
 
+const ratingRouter = require("./routes/Rating");
+app.use("/rating", ratingRouter);
+
+const paymentRouter = require("./routes/Payment");
+app.use("/payment", paymentRouter);
+
 app.use("/uploads", express.static("uploads"));
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 app.listen(PORT, () => {
   console.log("Express server started.");

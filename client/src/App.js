@@ -17,7 +17,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import EditProduct from "./Components/EditProduct";
 import Cart from "./Components/Cart";
 import Wishlist from "./Components/Wishlist";
-import PaymentCard from "./Components/PaymentCard";
+import Payment from "./Components/Payment";
 import Orders from "./Components/Orders";
 
 function App() {
@@ -45,6 +45,11 @@ function App() {
         component={Manage}
       />
       <PrivateRoute
+        path="/manage/orders"
+        roles={["manager"]}
+        component={Manage}
+      />
+      <PrivateRoute
         path="/user/profile"
         roles={["user"]}
         component={UserProfile}
@@ -56,17 +61,12 @@ function App() {
       />
       <PrivateRoute path="/cart" roles={["user"]} component={Cart} />
       <PrivateRoute path="/wishlist" roles={["user"]} component={Wishlist} />
-      <PrivateRoute
-        path="/payment/card"
-        roles={["user"]}
-        component={PaymentCard}
-      />
+      <PrivateRoute path="/payment" roles={["user"]} component={Payment} />
       <PrivateRoute
         path="/edit/:id"
         roles={["manager"]}
         component={EditProduct}
       />
-      <Footer />
     </Router>
   );
 }

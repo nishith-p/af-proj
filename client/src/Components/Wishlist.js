@@ -20,27 +20,23 @@ function Wishlist() {
   const wishFunction = (wishlistItems, wishlistDetails) => {
     Axios.get(`/product/products_by_id?id=${wishlistItems}&type=array`).then(
       (response) => {
-        wishlistDetails.forEach((wishlistItem) => {
-          response.data.forEach((productDetail, i) => {
-            if (wishlistItem.id === productDetail._id) {
-              response.data[i].quantity = wishlistItem.quantity;
-            }
-          });
-        });
         setProducts(response.data);
       }
     );
   };
 
-  const removeFromCart = (productId) => {
+  const cartHandler = (productId) => {
+    Axios.post(`/user/addtocart?productId=${productId}`).then((response) => {
+      console.log(response.data.success);
+
+      if (response.data.success) {
+        alert("Item has been added to your cart");
+      }
+    });
+  };
+
+  const removeFromWishList = (productId) => {
     Axios.get(`/user/removeFromWish?_id=${productId}`).then((response) => {
-      response.data.wishlist.forEach((item) => {
-        response.data.wishlistDetail.forEach((k, i) => {
-          if (item.id === k._id) {
-            response.data.wishlistDetail[i].quantity = item.quantity;
-          }
-        });
-      });
       setProducts(response.data.wishlist);
     });
   };
@@ -74,27 +70,33 @@ function Wishlist() {
                     <h4 class="title">
                       <a href={`/shop/${product._id}`}>{product.title} </a>
                     </h4>
-                    <div class="rating-wrap">
-                      <div class="label-rating">132 reviews</div>
-                    </div>
-                  </figcaption>
-                  <div class="bottom-wrap">
-                    <button
-                      class="btn btn-outline-dark btn-sm float-right"
-                      onClick={() => removeFromCart(product._id)}
-                    >
-                      Remove
-                    </button>
-                    <div class="price-wrap h5">
-                      <span class="price-new">Rs.{product.dprice}</span>{" "}
+                    <div className="price-wrap h5 float-left">
+                      <span className="price-new">Rs.{product.dprice}</span>{" "}
                       {product.discount !== 0 ? (
                         <small>
-                          <del class="price-old text-danger">
+                          <del className="price-old text-danger">
                             Rs.{product.price}
                           </del>
                         </small>
                       ) : null}
                       {/**/}
+                    </div>
+                  </figcaption>
+                  <div class="bottom-wrap">
+                    <div>
+                      <button
+                        class="btn btn-outline-dark btn-sm float-left"
+                        onClick={() => cartHandler(product._id)}
+                      >
+                        Add To Cart
+                      </button>
+                      <span />
+                      <button
+                        className="btn btn-outline-dark btn-sm float-right"
+                        onClick={() => removeFromWishList(product._id)}
+                      >
+                        Remove
+                      </button>
                     </div>
                   </div>
                 </figure>

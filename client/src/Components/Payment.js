@@ -2,14 +2,15 @@ import React, { useEffect, useState, useContext } from "react";
 import Axios from "axios";
 import PaymentService from "../Services/PaymentService";
 import { AuthContext } from "../Context/AuthContext";
-import Message from "../Components/Message";
+import Message from "./Message";
 
-function PaymentCard(props) {
+function Payment(props) {
   const [Payment, setPayment] = useState({
     fname: "",
     email: "",
     address: "",
     payments: [],
+    total: "",
     method: "",
   });
   const [Products, setProducts] = useState([]);
@@ -55,13 +56,35 @@ function PaymentCard(props) {
     setTotal(total);
   };
 
+  const clearCart = () => {
+    Axios.get("user/getCart").then((response) => {
+      response.data.forEach((item) => {
+        removeFromCart(item.id);
+      });
+      alert("Your Cart is Empty ");
+    });
+  };
+
+  const removeFromCart = (productId) => {
+    Axios.get(`/user/removeFromCart?_id=${productId}`).then((response) => {
+      response.data.cart.forEach((item) => {
+        response.data.cartDetail.forEach((k, i) => {
+          if (item.id === k._id) {
+            response.data.cartDetail[i].quantity = item.quantity;
+          }
+        });
+      });
+      setProducts(response.data.cart);
+    });
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(Payment);
     PaymentService.postPayment(Payment).then((data) => {
       const { message } = data;
       if (!message.msgError) {
         setMessage(message);
+        clearCart();
       } else if (message.msgBody === "UnAuthorized") {
         setMessage(message);
         authContext.setUser({ username: "", role: "" });
@@ -78,6 +101,7 @@ function PaymentCard(props) {
       ...prevState,
       [name]: value,
       payments: Products,
+      total: Total,
     }));
   };
 
@@ -127,7 +151,7 @@ function PaymentCard(props) {
             <form
               onSubmit={onSubmit}
               className="needs-validation"
-              novalidate=""
+              noValidate=""
             >
               <div className="row">
                 <div className="col-md-12 mb-3">
@@ -139,7 +163,7 @@ function PaymentCard(props) {
                     name="fname"
                     value={Payment.fname}
                     onChange={onChange}
-                    placeholder=""
+                    placeholder="Full Name"
                     required
                   />
                   <div className="invalid-feedback">
@@ -173,7 +197,7 @@ function PaymentCard(props) {
                   name="address"
                   value={Payment.address}
                   onChange={onChange}
-                  placeholder="1234 Main St"
+                  placeholder="1234 Main Street"
                   required=""
                 />
                 <div className="invalid-feedback">
@@ -181,63 +205,19 @@ function PaymentCard(props) {
                 </div>
               </div>
 
-              <div className="row">
-                <div className="col-md-6 mb-3">
-                  <label for="cc-name">Name on card</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="cc-name"
-                    placeholder=""
-                    required=""
-                  />
-                  <small className="text-muted">
-                    Full name as displayed on card
-                  </small>
-                  <div className="invalid-feedback">
-                    Name on card is required
-                  </div>
-                </div>
-                <div className="col-md-6 mb-3">
-                  <label for="cc-number">Credit card number</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="cc-number"
-                    placeholder=""
-                    required=""
-                  />
-                  <div className="invalid-feedback">
-                    Credit card number is required
-                  </div>
-                </div>
+              <div className="mb-3">
+                <label for="address">Payment Method</label>
+                <select
+                  class="form-control"
+                  name="method"
+                  value={Payment.method}
+                  onChange={onChange}
+                >
+                  <option>Card</option>
+                  <option>Cash</option>
+                </select>
               </div>
-              <div className="row">
-                <div className="col-md-3 mb-3">
-                  <label for="cc-expiration">Expiration</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="cc-expiration"
-                    placeholder=""
-                    required=""
-                  />
-                  <div className="invalid-feedback">
-                    Expiration date required
-                  </div>
-                </div>
-                <div className="col-md-3 mb-3">
-                  <label for="cc-expiration">CVV</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="cc-cvv"
-                    placeholder=""
-                    required=""
-                  />
-                  <div className="invalid-feedback">Security code required</div>
-                </div>
-              </div>
+
               <hr className="mb-4" />
               <button
                 className="btn btn-success btn-lg btn-block mb-4"
@@ -254,4 +234,4 @@ function PaymentCard(props) {
   );
 }
 
-export default PaymentCard;
+export default Payment;

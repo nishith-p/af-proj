@@ -47,6 +47,15 @@ const Sidebar = (props) => {
       {user.role === "manager" ? (
         <NavLink
           className="link-txt"
+          to="/manage/orders"
+          activeClassName="active"
+        >
+          <li className="li-sidebar">Orders</li>
+        </NavLink>
+      ) : null}
+      {user.role === "manager" ? (
+        <NavLink
+          className="link-txt"
           to="/manage/reviews"
           activeClassName="active"
         >
