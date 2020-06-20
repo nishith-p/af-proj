@@ -54,7 +54,7 @@ const User = (props) => {
   return (
     <div
       className="container"
-      style={{ marginTop: "30px", marginLeft: "20px" }}
+      style={{ marginTop: "30px", marginLeft: "20px", marginBottom: "80px" }}
     >
       <h4 style={{ marginBottom: "20px" }}>Users</h4>
       <hr></hr>

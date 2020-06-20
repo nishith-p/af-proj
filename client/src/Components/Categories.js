@@ -1,27 +1,16 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import CategoryService from "../Services/CategoryService";
 import Message from "./Message";
-import { AuthContext } from "../Context/AuthContext";
 
 const Categories = (props) => {
-  //Set initial state
+  //INITIAL STATES
   const [category, setCategory] = useState({ name: "" });
-
-  const [categoryN, setCategoryN] = useState({ name: "", id: "" });
-
-  const [categoryM, setCategoryM] = useState({ id: "" });
-
-  //Variable to fetch Orders from DB
+  const [editedCat, setEditedCat] = useState({ name: "", id: "" });
   const [categories, setCategories] = useState([]);
-
-  //Alerts (Success, Errors..)
   const [message, setMessage] = useState(null);
 
-  //Authentication
-  const authContext = useContext(AuthContext);
-
-  //Mount Error Fix
+  //MOUNT
   useEffect(() => {
     let unmounted = false;
     Axios.get("/category/views").then((response) => {
@@ -36,8 +25,9 @@ const Categories = (props) => {
     return () => {
       unmounted = true;
     };
-  });
+  }, []);
 
+  //REFRESH FUNCTION
   const getCat = () => {
     Axios.get("/category/views").then((response) => {
       if (response.data.success) {
@@ -49,7 +39,7 @@ const Categories = (props) => {
     });
   };
 
-  //Add Category
+  //ADD CATEGORY
   const onSubmit = (e) => {
     e.preventDefault();
     CategoryService.postCategory(category).then((data) => {
@@ -59,13 +49,11 @@ const Categories = (props) => {
     });
   };
 
-  //Edit Category
-  const onSubmit2 = (e) => {
+  //EDIT CATEGORY
+  const onEditSubmit = (e) => {
     e.preventDefault();
-    console.log(categoryM.id);
-    console.log(categoryN.name);
 
-    CategoryService.editCategory(categoryN, categoryM.id).then((data) => {
+    CategoryService.editCategory(editedCat, editedCat.id).then((data) => {
       const { message } = data;
       resetForm2();
       getCat();
@@ -76,11 +64,10 @@ const Categories = (props) => {
     console.log(id);
     console.log(name);
 
-    setCategoryN({ name: name });
-    setCategoryM({ id: id });
+    setEditedCat({ name: name, id: id });
   };
 
-  //Delete Category
+  //DELETE CATEGORY
   const onDeleteClick = (id) => {
     console.log(id);
     CategoryService.deleteCategory(id).then((data) => {
@@ -90,26 +77,29 @@ const Categories = (props) => {
     });
   };
 
+  //CHANGE-HANDLERS
   const onChange = (e) => {
     setCategory({ name: e.target.value });
   };
 
-  const onChange2 = (e) => {
-    setCategoryN({ name: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditedCat((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
-  const onChange3 = (e) => {
-    setCategoryM({ id: e.target.value });
-  };
-
-  //Form reset after adding
+  //FORM RESET
   const resetForm = () => {
     setCategory({ name: "" });
   };
 
   const resetForm2 = () => {
-    setCategoryN({ name: "" });
-    setCategoryM({ id: "" });
+    setEditedCat({
+      name: "",
+      id: "",
+    });
   };
 
   return (
@@ -144,7 +134,7 @@ const Categories = (props) => {
             </button>
           </form>
 
-          <form onSubmit={onSubmit2}>
+          <form onSubmit={onEditSubmit}>
             <h6 style={{ marginBottom: "15px" }}>Edit Category</h6>
             <label htmlFor="name" className="sr-only">
               Name:{" "}
@@ -152,14 +142,14 @@ const Categories = (props) => {
             <input
               type="hidden"
               name="id"
-              value={categoryM.id}
-              onChange={onChange3}
+              value={editedCat.id}
+              onChange={handleChange}
             ></input>
             <input
               type="text"
               name="name"
-              value={categoryN.name}
-              onChange={onChange2}
+              value={editedCat.name}
+              onChange={handleChange}
               className="form-control"
               style={{ marginBottom: "15px" }}
               placeholder="Category Name"
@@ -181,7 +171,6 @@ const Categories = (props) => {
               <thead>
                 <tr>
                   <th scope="col">Name</th>
-                  <th scope="col">Products</th>
                   <th scope="col">Actions</th>
                 </tr>
               </thead>
@@ -190,7 +179,6 @@ const Categories = (props) => {
                   <tbody key={post.id} className="post">
                     <tr>
                       <td>{post.name}</td>
-                      <td>-</td>
                       <td>
                         <button
                           type="button"

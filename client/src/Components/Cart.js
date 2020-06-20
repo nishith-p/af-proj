@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
-import PaymentCard from "./PaymentCard";
 import { Link } from "react-router-dom";
 
 function Cart() {
@@ -44,6 +43,44 @@ function Cart() {
     });
 
     setTotal(total);
+    //reloadFunction();
+  };
+
+  const incrementQty = (productId) => {
+    console.log(productId);
+
+    Axios.post(`/user/incrementCart?productId=${productId}`).then(
+      (response) => {
+        console.log(response);
+      }
+    );
+  };
+
+  const decrementQty = (productId) => {
+    console.log(productId);
+
+    Products.forEach((productDetail, i) => {
+      if (productId === productDetail._id) {
+        if (Products[i].quantity <= 0) {
+          removeFromCart(productId);
+        }
+      }
+    });
+
+    Axios.post(`/user/decrementCart?productId=${productId}`).then(
+      (response) => {
+        console.log(response);
+      }
+    );
+  };
+
+  const clearCart = () => {
+    Axios.get("user/getCart").then((response) => {
+      response.data.forEach((item) => {
+        removeFromCart(item.id);
+      });
+      alert("Your Cart is Empty ");
+    });
   };
 
   const removeFromCart = (productId) => {
@@ -79,9 +116,9 @@ function Cart() {
         </div>
       ) : (
         <div>
-          <table class="table table-bordered">
+          <table className="table table-bordered">
             <thead>
-              <tr class="align-middle text-center">
+              <tr className="align-middle text-center">
                 <th scope="col">Preview</th>
                 <th scope="col">Name</th>
                 <th scope="col">Category</th>
@@ -94,18 +131,51 @@ function Cart() {
               return (
                 <tbody key={post._id} className="post">
                   <tr>
-                    <td class="align-middle text-center">
+                    <td className="align-middle text-center">
                       <img
                         src={post.image}
-                        class="img-fluid"
+                        className="img-fluid"
                         style={{ maxWidth: "70px" }}
                       />
                     </td>
-                    <td class="align-middle text-center">{post.title}</td>
-                    <td class="align-middle text-center">{post.category}</td>
-                    <td class="align-middle text-center">{post.quantity}</td>
-                    <td class="align-middle text-center">Rs. {post.dprice}</td>
-                    <td class="align-middle text-center">
+                    <td className="align-middle text-center">{post.title}</td>
+                    <td className="align-middle text-center">
+                      {post.category}
+                    </td>
+                    <td className="align-middle text-center">
+                      <div
+                        className="btn-group"
+                        role="group"
+                        aria-label="Basic example"
+                      >
+                        <span
+                          type="button"
+                          className="btn mx-1 btn-outline-secondary"
+                          onClick={() => decrementQty(post._id)}
+                        >
+                          {" "}
+                          -{" "}
+                        </span>
+                        <span
+                          type="button"
+                          className="btn mx-1 btn-outline-secondary"
+                        >
+                          {post.quantity}
+                        </span>
+                        <span
+                          type="button"
+                          className="btn mx-1 btn-outline-secondary"
+                          onClick={() => incrementQty(post._id)}
+                        >
+                          {" "}
+                          +{" "}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="align-middle text-center">
+                      Rs. {post.dprice}
+                    </td>
+                    <td className="align-middle text-center">
                       <div>
                         <button
                           type="button"
@@ -123,17 +193,31 @@ function Cart() {
             })}
           </table>
 
-          <div class="row">
-            <div class="col-md-6">
-              <h4 class="align-middle float-left">Total Amount: Rs. {Total}</h4>
-            </div>
-            <div class="col-md-6">
-              <button
-                type="button"
-                class="btn btn-outline-success align-middle float-right"
-              >
-                Proceed to Checkout
-              </button>
+          <div className="row">
+            <div className="col-10 mt-2 ml-sm-5 ml-md-auto col-sm-8 text-right">
+              <br />
+
+              <h4 className="font-italic">
+                <br />
+                <span> Total Amount:</span>
+                <strong> Rs. {Total}</strong>
+              </h4>
+              <br />
+              <Link to={"/"}>
+                <button
+                  className="btn btn-outline-warning mb-3 px-5"
+                  type="button"
+                  onClick={() => clearCart()}
+                >
+                  Clear My Cart
+                </button>
+              </Link>
+              <br />
+              <Link to={"/payment"}>
+                <button type="button" className="btn btn-outline-success">
+                  Proceed to Checkout
+                </button>
+              </Link>
             </div>
           </div>
         </div>

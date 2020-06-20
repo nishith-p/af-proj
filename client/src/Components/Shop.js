@@ -19,7 +19,7 @@ const Shop = () => {
 
   //GET PRODUCTS
   const getProducts = (variables) => {
-    Axios.post("http://localhost:5000/product/viewm", variables)
+    Axios.post("/product/viewm", variables)
       .then((response) => {
         if (response.data.success) {
           if (variables.loadMore) {

@@ -72,16 +72,11 @@ const RegisterMan = (props) => {
     UserService.deleteUser(id).then((data) => {
       const { message } = data;
       if (!message.msgError) {
-        UserService.getUsers().then((data) => {
-          //setCategories(getData.categories);
-          //setMessage(message);
-        });
+        UserService.getUsers().then((data) => {});
       } else if (message.msgBody == "Unauthorized") {
-        //setMessage(message);
         authContext.setUser({ username: "", role: "" });
         authContext.setIsAuthenticated(false);
       } else {
-        //setMessage(message);
       }
     });
   };

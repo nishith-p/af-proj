@@ -57,7 +57,7 @@ export default {
 
   postProd: (product) => {
     return axios
-      .post("http://localhost:5000/product/add", product)
+      .post("/product/add", product)
       .then((response) => {
         console.log(response);
       })

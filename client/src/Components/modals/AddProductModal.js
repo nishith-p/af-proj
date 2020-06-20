@@ -6,6 +6,7 @@ import FileUpload from "../utils/FileUpload";
 import { AuthContext } from "../../Context/AuthContext";
 import { Modal, Button } from "react-bootstrap";
 import Axios from "axios";
+import ManagerProduct from "../ManagerProduct";
 
 function AddProductModal(props) {
   const [state, setState] = useState({
@@ -73,6 +74,8 @@ function AddProductModal(props) {
         console.log(error.response);
       });
     resetForm();
+
+    // ManagerProduct(window.location.reload(false))
   };
 
   const resetForm = () => {
@@ -172,6 +175,7 @@ function AddProductModal(props) {
                   className="btn btn-md btn-block"
                   style={{ backgroundColor: "#d1d1ee", marginBottom: "15px" }}
                   type="submit"
+                  onClick={props.refresh}
                   onClick={props.onHide}
                 >
                   Add

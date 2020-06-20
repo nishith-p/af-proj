@@ -12,6 +12,9 @@ const CommentSchema = mongoose.Schema(
       type: Schema.Types.ObjectID,
       ref: "Product",
     },
+    userName: {
+        type: String
+    },
   },
   { timestamps: true }
 );

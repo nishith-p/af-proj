@@ -4,9 +4,9 @@ const passport = require("passport");
 const passportConfig = require("../passport");
 const JWT = require("jsonwebtoken");
 const User = require("../models/User");
-const Order = require("../models/Order");
 const Product = require("../models/Product");
 const Payment = require("../models/Payment");
+const nodemailer = require("nodemailer");
 
 const signToken = (userID) => {
   return JWT.sign(
@@ -38,13 +38,57 @@ userRouter.post("/register", (req, res) => {
           res.status(500).json({
             message: { msgBody: "Error occured", msgError: true },
           });
-        else
+        else {
           res.status(201).json({
             message: {
               msgBody: "Account successfully created.",
               msgError: false,
             },
           });
+
+          //NODEMAILER FOR MANAGER
+          if (req.body.role == "manager") {
+            const emailAddress = req.body.username;
+            const output = `
+            <p>Hello,</p>
+            <p>This email address has been granted Manager access. Please use the following credentials to login.</p>
+            <ul>
+                <li>Password: ${req.body.password}</li>
+            </ul>
+            <p>Thank you</p>
+            `;
+
+            async function main() {
+              let transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 587,
+                secure: false,
+                auth: {
+                  user: "gridfashionaf@gmail.com",
+                  pass: "mworks123",
+                },
+                tls: {
+                  rejectUnauthorized: false,
+                },
+              });
+
+              let info = await transporter.sendMail({
+                from: '"Grid Fashion" <gridfashionaf@gmail.com>',
+                to: emailAddress,
+                subject: "Grid Fashion Store | Manager Access Granted",
+                text: "Hello world",
+                html: output,
+              });
+
+              console.log("Message sent: %s", info.messageId);
+              console.log(
+                "Preview URL: %s",
+                nodemailer.getTestMessageUrl(info)
+              );
+            }
+            main().catch(console.error);
+          }
+        }
       });
     }
   });
@@ -60,6 +104,10 @@ userRouter.post(
       const token = signToken(_id);
       res.cookie("access_token", token, { httpOnly: true, sameSite: true });
       res.status(200).json({ isAuthenticated: true, user: { username, role } });
+    } else {
+      res.status(401).json({
+        message: { msgBody: "Invalid Login Credentials", msgError: true },
+      });
     }
   }
 );
@@ -71,35 +119,6 @@ userRouter.get(
   (req, res) => {
     res.clearCookie("access_token");
     res.json({ user: { username: "", role: "" }, success: true });
-  }
-);
-
-userRouter.post(
-  "/order",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    const order = new Order(req.body);
-    order.save((err) => {
-      if (err)
-        res.status(500).json({
-          message: { msgBody: "Error occured", msgError: true },
-        });
-      else {
-        req.user.orders.push(order);
-        req.user.save((err) => {
-          if (err)
-            res.status(500).json({
-              message: { msgBody: "Error occured", msgError: true },
-            });
-          else
-            res.status(200).json({
-              message: {
-                message: { msgBody: "Successfully added.", msgError: false },
-              },
-            });
-        });
-      }
-    });
   }
 );
 
@@ -241,7 +260,7 @@ userRouter.post(
           { new: true },
           (err, userInfo) => {
             if (err) return res.json({ success: false, err });
-            res.status(200).json(userInfo.cart);
+            return res.status(200).json({ success: true });
           }
         );
       } else {
@@ -259,7 +278,65 @@ userRouter.post(
           { new: true },
           (err, userInfo) => {
             if (err) return res.json({ success: false, err });
-            res.status(200).json(userInfo.cart);
+            return res.status(200).json({ success: true });
+          }
+        );
+      }
+    });
+  }
+);
+
+//INCREMENT QTY
+userRouter.post(
+  "/incrementCart",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    User.find({ _id: req.user._id }, (err, userInfo) => {
+      let duplicate = false;
+
+      req.user.cart.forEach((item) => {
+        if (item.id == req.query.productId) {
+          duplicate = true;
+        }
+      });
+
+      if (duplicate) {
+        User.findOneAndUpdate(
+          { _id: req.user._id, "cart.id": req.query.productId },
+          { $inc: { "cart.$.quantity": 1 } },
+          { new: true },
+          (err, userInfo) => {
+            if (err) return res.json({ success: false, err });
+            return res.status(200).json({ success: true });
+          }
+        );
+      }
+    });
+  }
+);
+
+//DECREMENT QTY
+userRouter.post(
+  "/decrementCart",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    User.find({ _id: req.user._id }, (err, userInfo) => {
+      let duplicate = false;
+
+      req.user.cart.forEach((item) => {
+        if (item.id == req.query.productId) {
+          duplicate = true;
+        }
+      });
+
+      if (duplicate) {
+        User.findOneAndUpdate(
+          { _id: req.user._id, "cart.id": req.query.productId },
+          { $inc: { "cart.$.quantity": -1 } },
+          { new: true },
+          (err, userInfo) => {
+            if (err) return res.json({ success: false, err });
+            return res.status(200).json({ success: true });
           }
         );
       }
@@ -277,7 +354,6 @@ userRouter.get(
       { $pull: { cart: { id: req.query._id } } },
       { new: true },
       (err, userInfo) => {
-        //error might occur
         let cart = req.user.cart;
         let array = cart.map((item) => {
           return item.id;
@@ -330,11 +406,11 @@ userRouter.post(
       if (duplicate) {
         User.findOneAndUpdate(
           { _id: req.user._id, "wishlist.id": req.query.productId },
-          { $inc: { "wishlist.$.quantity": 1 } },
+          // { $inc: { "wishlist.$.quantity": 1 } },
           { new: true },
           (err, userInfo) => {
             if (err) return res.json({ success: false, err });
-            res.status(200).json(userInfo.wishlist);
+            return res.status(200).json({ success: true });
           }
         );
       } else {
@@ -344,7 +420,7 @@ userRouter.post(
             $push: {
               wishlist: {
                 id: req.query.productId,
-                quantity: 1,
+                //  quantity: 1,
                 date: Date.now(),
               },
             },
@@ -352,7 +428,7 @@ userRouter.post(
           { new: true },
           (err, userInfo) => {
             if (err) return res.json({ success: false, err });
-            res.status(200).json(userInfo.wishlist);
+            return res.status(200).json({ success: true });
           }
         );
       }

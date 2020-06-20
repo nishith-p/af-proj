@@ -33,7 +33,7 @@ class EditProduct extends Component {
 
   componentDidMount() {
     axios
-      .get("http://localhost:5000/product/" + this.props.match.params.id)
+      .get("/product/" + this.props.match.params.id)
       .then((response) => {
         this.setState({
           title: response.data.title,
@@ -50,7 +50,7 @@ class EditProduct extends Component {
         console.log(error);
       });
 
-    axios.get("http://localhost:5000/category/view").then((response) => {
+    axios.get("/category/view").then((response) => {
       if (response.data.length > 0) {
         this.setState({
           categories: response.data.map((category) => category.name),

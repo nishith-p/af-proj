@@ -22,6 +22,16 @@ const ManagerProduct = (props) => {
     });
   }, []);
 
+  const refresh = () => {
+    Axios.get("/product/views").then((response) => {
+      if (response.data.success) {
+        setProducts(response.data.products);
+      } else {
+        alert("Failed");
+      }
+    });
+  };
+
   //EDIT CLICK
   const onEditClick = (id, title, category, quantity, price, discount) => {
     setModalShowEdit(true);
@@ -57,7 +67,11 @@ const ManagerProduct = (props) => {
 
       <hr></hr>
 
-      <AddProductModal show={modalShow} onHide={() => setModalShow(false)} />
+      <AddProductModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        refresh={refresh()}
+      />
 
       <div>
         <table class="table table-bordered">
